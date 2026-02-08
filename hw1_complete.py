@@ -38,19 +38,16 @@ def build_model2():
         layers.Conv2D(64, 3, strides=2, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.Conv2D(64, 3, padding="same", activation="relu"),
+        layers.Conv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.Conv2D(64, 3, padding="same", activation="relu"),
+        layers.Conv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.Conv2D(64, 3, padding="same", activation="relu"),
+        layers.Conv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.Conv2D(64, 3, padding="same", activation="relu"),
-        layers.BatchNormalization(),
-
-        layers.Conv2D(128, 3, padding="same"),
+        layers.Conv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
         layers.Flatten(),
@@ -62,33 +59,29 @@ def build_model2():
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"]
     )
-
     return model
 
 def build_model3():
 
     model = Sequential([
 
-        layers.Conv2D(32, 3, strides=2, padding="same", activation="relu",
-              input_shape=(32,32,3)),
-        layers.BatchNormalization(),
-
-        layers.SeparableConv2D(64, 3, strides=2, padding="same", activation="relu"),
+        layers.SeparableConv2D(32, 3, padding="same", activation="relu",
+                                input_shape=(32,32,3)),
         layers.BatchNormalization(),
 
         layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(128, 3, padding="same"),
+        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
         layers.Flatten(),
@@ -104,15 +97,7 @@ def build_model3():
     return model
 
 def build_model50k():
-
-    base = keras.models.load_model("best_model.h5", compile=True)
-
-    model = Sequential([
-        layers.Rescaling(1./255),
-        base
-    ])
-
-    return model
+    return keras.models.load_model("best_model.h5", compile=True)
 
 # no training or dataset construction should happen above this line
 # also, be careful not to unindent below here, or the code be executed on import
