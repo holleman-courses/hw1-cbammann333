@@ -15,23 +15,20 @@ from matplotlib import image
 #print(f"Keras Version: {keras.__version__}")
 
 def build_model1():
-  model = Sequential([
+    model = Sequential([
         layers.Flatten(input_shape=(32,32,3)),
-        layers.Dense(128),
-        layers.LeakyReLU(),
-        layers.Dense(128),
-        layers.LeakyReLU(),
-        layers.Dense(128),
-        layers.LeakyReLU(),
+        layers.Dense(128, activation=tf.nn.leaky_relu),
+        layers.Dense(128, activation=tf.nn.leaky_relu),
+        layers.Dense(128, activation=tf.nn.leaky_relu),
         layers.Dense(10)
     ])
 
-  model.compile(
+    model.compile(
         optimizer="adam",
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"]
     )
-  return model
+    return model
 
 def build_model2():
     model = Sequential([
@@ -70,7 +67,7 @@ def build_model2():
 
 def build_model3():
 
-    inputs = Input(shape=(32, 32, 3))
+    inputs = Input(shape=(32,32,3))
 
     x = layers.Conv2D(32, 3, strides=2, padding="same", activation="relu")(inputs)
     x = layers.BatchNormalization()(x)
@@ -108,7 +105,13 @@ def build_model3():
 
 def build_model50k():
 
-    model = keras.models.load_model("best_model.h5", compile=True)
+    base = keras.models.load_model("best_model.h5", compile=True)
+
+    model = Sequential([
+        layers.Rescaling(1./255),
+        base
+    ])
+
     return model
 
 # no training or dataset construction should happen above this line
