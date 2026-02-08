@@ -32,7 +32,9 @@ def build_model1():
 
 def build_model2():
     model = Sequential([
-        layers.Conv2D(32, 3, strides=2, padding="same", activation="relu"),
+
+        layers.Conv2D(32, 3, strides=2, padding="same", activation="relu",
+                      input_shape=(32,32,3)),
         layers.BatchNormalization(),
 
         layers.Conv2D(64, 3, strides=2, padding="same", activation="relu"),
@@ -59,29 +61,30 @@ def build_model2():
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"]
     )
+
     return model
 
 def build_model3():
 
     model = Sequential([
 
-        layers.SeparableConv2D(32, 3, padding="same", activation="relu",
+        layers.SeparableConv2D(32, 3, strides=2, padding="same",
                                 input_shape=(32,32,3)),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(64, 3, strides=2, padding="same"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same"),
         layers.BatchNormalization(),
 
-        layers.SeparableConv2D(128, 3, padding="same", activation="relu"),
+        layers.SeparableConv2D(128, 3, padding="same"),
         layers.BatchNormalization(),
 
         layers.Flatten(),
@@ -104,7 +107,7 @@ def build_model50k():
 
 if __name__ == '__main__':
   RUN_TRAINING_1 = False
-  RUN_TRAINING_2 = True
+  RUN_TRAINING_2 = False
   RUN_TRAINING_3 = False
   RUN_TRAINING_50K = False
 
@@ -131,91 +134,111 @@ if __name__ == '__main__':
   model1.summary()
 
   if RUN_TRAINING_1:
-    history1 = model1.fit(
+      history1 = model1.fit(
       train_images, train_labels,
       epochs = 30,
       validation_data = (val_images, val_labels)
-    )
+      )
 
-    train_loss, train_acc = model1.evaluate(train_images, train_labels, verbose=0)
-    val_loss, val_acc     = model1.evaluate(val_images, val_labels, verbose=0)
-    test_loss, test_acc   = model1.evaluate(test_images, test_labels, verbose=0)
+  train_loss, train_acc = model1.evaluate(train_images, train_labels, verbose=0)
+  val_loss, val_acc     = model1.evaluate(val_images, val_labels, verbose=0)
+  test_loss, test_acc   = model1.evaluate(test_images, test_labels, verbose=0)
 
-    print("Model1 train acc:", train_acc)
-    print("Model1 val acc:  ", val_acc)
-    print("Model1 test acc: ", test_acc)
+  print("Model1 train acc:", train_acc)
+  print("Model1 val acc:  ", val_acc)
+  print("Model1 test acc: ", test_acc)
 
-    #MODEL2##################################################################
+  #MODEL2##################################################################
 
-    model2 = build_model2()
-    model2.summary()
+  model2 = build_model2()
+  model2.summary()
 
-    if RUN_TRAINING_2:
+  if RUN_TRAINING_2:
         history2 = model2.fit(
             train_images, train_labels,
             epochs=30,
             validation_data=(val_images, val_labels)
         )
 
-    class_names = ['airplane','automobile','bird','cat','deer','dog','frog','horse','ship','truck']
+  class_names = ['airplane','automobile','bird','cat','deer','dog','frog','horse','ship','truck']
 
-    img = np.array(keras.utils.load_img(
+  img = np.array(keras.utils.load_img(
         "test_image_cat.jpg",
         color_mode="rgb",
         target_size=(32, 32)
     )) / 255.0
 
-    pred = model2.predict(img[None, ...])
-    pred_idx = np.argmax(pred)
+  pred = model2.predict(img[None, ...])
+  pred_idx = np.argmax(pred)
 
-    print("Predicted class:", class_names[pred_idx])
+  print("Predicted class:", class_names[pred_idx])
 
-    train_loss2, train_acc2 = model2.evaluate(train_images, train_labels, verbose=0)
-    val_loss2, val_acc2     = model2.evaluate(val_images, val_labels, verbose=0)
-    test_loss2, test_acc2   = model2.evaluate(test_images, test_labels, verbose=0)
+  train_loss2, train_acc2 = model2.evaluate(train_images, train_labels, verbose=0)
+  val_loss2, val_acc2     = model2.evaluate(val_images, val_labels, verbose=0)
+  test_loss2, test_acc2   = model2.evaluate(test_images, test_labels, verbose=0)
 
-    print("Model2 train acc:", train_acc2)
-    print("Model2 val acc:  ", val_acc2)
-    print("Model2 test acc: ", test_acc2)
+  print("Model2 train acc:", train_acc2)
+  print("Model2 val acc:  ", val_acc2)
+  print("Model2 test acc: ", test_acc2)
 
     #MODEL3##################################################################
 
-    model3 = build_model3()
-    model3.summary()
+  model3 = build_model3()
+  model3.summary()
 
-    if RUN_TRAINING_3:
+  if RUN_TRAINING_3:
         history3 = model3.fit(
             train_images, train_labels,
             epochs=30,
             validation_data=(val_images, val_labels)
         )
 
-    train_loss3, train_acc3 = model3.evaluate(train_images, train_labels, verbose=0)
-    val_loss3, val_acc3     = model3.evaluate(val_images, val_labels, verbose=0)
-    test_loss3, test_acc3   = model3.evaluate(test_images, test_labels, verbose=0)
+  train_loss3, train_acc3 = model3.evaluate(train_images, train_labels, verbose=0)
+  val_loss3, val_acc3     = model3.evaluate(val_images, val_labels, verbose=0)
+  test_loss3, test_acc3   = model3.evaluate(test_images, test_labels, verbose=0)
 
-    print("Model3 train acc:", train_acc3)
-    print("Model3 val acc:  ", val_acc3)
-    print("Model3 test acc: ", test_acc3)
+  print("Model3 train acc:", train_acc3)
+  print("Model3 val acc:  ", val_acc3)
+  print("Model3 test acc: ", test_acc3)
 
-    ###################################################################
+    #MODEL50K##################################################################
 
-    model50k = build_model50k()
-    model50k.summary()
+  model50k = Sequential([
+      layers.Input(shape=(32,32,3)),
 
-    if RUN_TRAINING_50K:
-        model50k.fit(
-            train_images, train_labels,
-            epochs=30,
-            validation_data=(val_images, val_labels)
-        )
+      layers.Conv2D(24, 3, padding="same", activation="relu"),
+      layers.BatchNormalization(),
+      layers.MaxPooling2D(),
 
-    model50k.save("best_model.h5")
+      layers.SeparableConv2D(48, 3, padding="same", activation="relu"),
+      layers.BatchNormalization(),
+      layers.MaxPooling2D(),
 
-    train_loss50, train_acc50 = model50k.evaluate(train_images, train_labels, verbose=0)
-    val_loss50,   val_acc50   = model50k.evaluate(val_images, val_labels, verbose=0)
-    test_loss50,  test_acc50  = model50k.evaluate(test_images, test_labels, verbose=0)
+      layers.SeparableConv2D(96, 3, padding="same", activation="relu"),
+      layers.BatchNormalization(),
 
-    print("50k model train acc:", train_acc50)
-    print("50k model val acc:  ", val_acc50)
-    print("50k model test acc: ", test_acc50)
+      layers.GlobalAveragePooling2D(),
+      layers.Dense(10)
+  ])
+
+  model50k.compile(
+      optimizer="adam",
+      loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+      metrics=["accuracy"]
+  )
+
+  if RUN_TRAINING_50K:
+      model50k.fit(
+          train_images, train_labels,
+          epochs=30,
+          validation_data=(val_images, val_labels)
+      )
+      model50k.save("best_model.h5")
+
+  train_loss50, train_acc50 = model50k.evaluate(train_images, train_labels, verbose=0)
+  val_loss50,   val_acc50   = model50k.evaluate(val_images, val_labels, verbose=0)
+  test_loss50,  test_acc50  = model50k.evaluate(test_images, test_labels, verbose=0)
+
+  print("50k model train acc:", train_acc50)
+  print("50k model val acc:  ", val_acc50)
+  print("50k model test acc: ", test_acc50)
