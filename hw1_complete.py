@@ -16,8 +16,7 @@ from matplotlib import image
 
 def build_model1():
   model = Sequential([
-        layers.Input(shape=(32, 32, 3)),
-        layers.Flatten(),
+        layers.Flatten(input_shape=(32,32,3)),
         layers.Dense(128),
         layers.LeakyReLU(),
         layers.Dense(128),
@@ -36,12 +35,13 @@ def build_model1():
 
 def build_model2():
     model = Sequential([
-        layers.Input(shape=(32, 32, 3)),
-
         layers.Conv2D(32, 3, strides=2, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
         layers.Conv2D(64, 3, strides=2, padding="same", activation="relu"),
+        layers.BatchNormalization(),
+
+        layers.Conv2D(64, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
         layers.Conv2D(64, 3, padding="same", activation="relu"),
@@ -69,12 +69,16 @@ def build_model2():
     return model
 
 def build_model3():
+
     inputs = Input(shape=(32, 32, 3))
 
     x = layers.Conv2D(32, 3, strides=2, padding="same", activation="relu")(inputs)
     x = layers.BatchNormalization()(x)
 
     x = layers.SeparableConv2D(64, 3, strides=2, padding="same", activation="relu")(x)
+    x = layers.BatchNormalization()(x)
+
+    x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
     x = layers.BatchNormalization()(x)
 
     x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
@@ -104,30 +108,7 @@ def build_model3():
 
 def build_model50k():
 
-    model = Sequential([
-        layers.Input(shape=(32,32,3)),
-
-        layers.Conv2D(24, 3, padding="same", activation="relu"),
-        layers.BatchNormalization(),
-        layers.MaxPooling2D(),
-
-        layers.SeparableConv2D(48, 3, padding="same", activation="relu"),
-        layers.BatchNormalization(),
-        layers.MaxPooling2D(),
-
-        layers.SeparableConv2D(96, 3, padding="same", activation="relu"),
-        layers.BatchNormalization(),
-
-        layers.GlobalAveragePooling2D(),
-        layers.Dense(10)
-    ])
-
-    model.compile(
-        optimizer="adam",
-        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-        metrics=["accuracy"]
-    )
-
+    model = keras.models.load_model("best_model.h5", compile=True)
     return model
 
 # no training or dataset construction should happen above this line
