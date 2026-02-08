@@ -100,7 +100,15 @@ def build_model3():
     return model
 
 def build_model50k():
-    return keras.models.load_model("best_model.h5", compile=True)
+    base = keras.models.load_model("best_model.h5", compile=True)
+
+    model = keras.Sequential([
+        layers.Input(shape=(32,32,3)),
+        layers.Rescaling(1./255),
+        base
+    ])
+
+    return model
 
 # no training or dataset construction should happen above this line
 # also, be careful not to unindent below here, or the code be executed on import
@@ -109,7 +117,7 @@ if __name__ == '__main__':
   RUN_TRAINING_1 = False
   RUN_TRAINING_2 = False
   RUN_TRAINING_3 = False
-  RUN_TRAINING_50K = False
+  RUN_TRAINING_50K = True
 
   ###################################################################
   ## Add code here to Load the CIFAR10 data set
@@ -204,22 +212,24 @@ if __name__ == '__main__':
     #MODEL50K##################################################################
 
   model50k = Sequential([
-      layers.Input(shape=(32,32,3)),
+    layers.Input(shape=(32,32,3)),
+    layers.Rescaling(1./255),
 
-      layers.Conv2D(24, 3, padding="same", activation="relu"),
-      layers.BatchNormalization(),
-      layers.MaxPooling2D(),
+    layers.Conv2D(24, 3, padding="same", activation="relu"),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
 
-      layers.SeparableConv2D(48, 3, padding="same", activation="relu"),
-      layers.BatchNormalization(),
-      layers.MaxPooling2D(),
+    layers.SeparableConv2D(48, 3, padding="same", activation="relu"),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
 
-      layers.SeparableConv2D(96, 3, padding="same", activation="relu"),
-      layers.BatchNormalization(),
+    layers.SeparableConv2D(96, 3, padding="same", activation="relu"),
+    layers.BatchNormalization(),
 
-      layers.GlobalAveragePooling2D(),
-      layers.Dense(10)
-  ])
+    layers.GlobalAveragePooling2D(),
+    layers.Dense(10)
+])
+
 
   model50k.compile(
       optimizer="adam",
