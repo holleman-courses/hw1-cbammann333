@@ -50,7 +50,7 @@ def build_model2():
         layers.Conv2D(64, 3, padding="same", activation="relu"),
         layers.BatchNormalization(),
 
-        layers.Conv2D(128, 3, padding="same", activation="relu"),
+        layers.Conv2D(128, 3, padding="same"),
         layers.BatchNormalization(),
 
         layers.Flatten(),
@@ -67,33 +67,33 @@ def build_model2():
 
 def build_model3():
 
-    inputs = Input(shape=(32,32,3))
+    model = Sequential([
 
-    x = layers.Conv2D(32, 3, strides=2, padding="same", activation="relu")(inputs)
-    x = layers.BatchNormalization()(x)
+        layers.Conv2D(32, 3, strides=2, padding="same", activation="relu",
+              input_shape=(32,32,3)),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(64, 3, strides=2, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(64, 3, strides=2, padding="same", activation="relu"),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(64, 3, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(64, 3, padding="same", activation="relu"),
+        layers.BatchNormalization(),
 
-    x = layers.SeparableConv2D(128, 3, padding="same", activation="relu")(x)
-    x = layers.BatchNormalization()(x)
+        layers.SeparableConv2D(128, 3, padding="same"),
+        layers.BatchNormalization(),
 
-    x = layers.Flatten()(x)
-    outputs = layers.Dense(10)(x)
-
-    model = keras.Model(inputs, outputs)
+        layers.Flatten(),
+        layers.Dense(10)
+    ])
 
     model.compile(
         optimizer="adam",
